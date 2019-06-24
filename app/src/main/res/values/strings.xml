@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">App</string>
+    <string name="title_domain">Domain</string>
+    <string name="title_data">Data</string>
+</resources>
