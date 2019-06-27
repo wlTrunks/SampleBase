@@ -7,12 +7,20 @@ import androidx.lifecycle.Observer
 
 
 open class LoaderComponent : LoadingStateListener {
-    protected var dataLoaded: DataLoadedState = DataLoadedState.SUCCESS
+    override val responseLD: MutableLiveData<ResponseMessage> = MutableLiveData()
+
+    private val responseMessage: ResponseMessage = ResponseMessage()
+
+    override fun setResponseCodeMessage(code: Int, message: String) {
+        responseMessage.errorCode = code
+        responseMessage.message = message
+    }
+
     override val loadingStateLD = MutableLiveData<LoadingState>()
-    protected var _loadingState = LoadingState.IDLE
+
+    protected var _loadingState = LoadingState.DONE
         set(value) {
             field = value
-//            loadingStatePS.onNext(value)
             loadingStateLD.value = value
         }
 
@@ -20,31 +28,15 @@ open class LoaderComponent : LoadingStateListener {
 
     fun subscribeToLoadingState(@NonNull owner: LifecycleOwner, componentHolder: UIComponentHolder) {
         loadingStateLD.observe(owner, Observer {
-            processStates(componentHolder, it!!)
         })
     }
 
     override fun loadingDone(isSuccess: Boolean) {
-        dataLoaded = if (isSuccess) DataLoadedState.SUCCESS else DataLoadedState.ERROR
         _loadingState = LoadingState.DONE
     }
 
     override fun startLoading() {
         _loadingState = LoadingState.ON_START
-    }
-
-    override fun processStates(uiComponentHolder: UIComponentHolder, loadingState: LoadingState) {
-        when (loadingState) {
-            LoadingState.ON_START -> {
-//                uiComponentHolder.showProgress()
-            }
-            LoadingState.DONE -> {
-//                uiComponentHolder.endProgress()
-//                uiComponentHolder.refreshUI()
-                _loadingState = LoadingState.IDLE
-            }
-            else -> Unit
-        }
     }
 }
 
@@ -53,26 +45,6 @@ class PaginationLoaderComponent : LoaderComponent() {
     private val page = Page()
 
     private var pagingState = PagingState.REFRESH
-
-    override fun processStates(uiComponentHolder: UIComponentHolder, loadingState: LoadingState) {
-        when (loadingState) {
-            LoadingState.ON_START -> {
-//                if (pagingState != PagingState.REFRESH)
-//                    uiComponentHolder.showProgress()
-            }
-            LoadingState.DONE -> {
-//                uiComponentHolder.endProgress()
-                if (pagingState == PagingState.REFRESH) {
-                    if (dataLoaded == DataLoadedState.SUCCESS)
-//                        uiComponentHolder.setProgressPaginationPosition(true)
-                    pagingState = PagingState.PAGING
-                }
-//                uiComponentHolder.refreshUI()
-                _loadingState = LoadingState.IDLE
-            }
-            else -> Unit
-        }
-    }
 
     fun proceedPagingState(
         isSuccess: Boolean,
@@ -101,7 +73,7 @@ class PaginationLoaderComponent : LoaderComponent() {
         pagingState = PagingState.REFRESH
     }
 
-    fun isPaginationEnable() = _loadingState == LoadingState.IDLE
+    fun isPaginationEnable() = _loadingState == LoadingState.DONE
 }
 
 class Page {
@@ -147,7 +119,7 @@ class Page {
 
 interface LoadingStateListener {
 
-    fun processStates(uiComponentHolder: UIComponentHolder, loadingState: LoadingState)
+    fun setResponseCodeMessage(code: Int, message: String)
 
     fun getLoadingState(): LoadingState
 
@@ -157,6 +129,8 @@ interface LoadingStateListener {
 
     val loadingStateLD: MutableLiveData<LoadingState>
 
+    val responseLD: MutableLiveData<ResponseMessage>
+
 }
 
 enum class PagingState {
@@ -165,7 +139,6 @@ enum class PagingState {
 }
 
 enum class LoadingState {
-    IDLE,
     ON_START,
     DONE;
 }

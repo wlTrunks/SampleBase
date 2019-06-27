@@ -11,7 +11,7 @@ class PopularMoviesVM(private val popularMoviesUC: GetPopularMoviesUC) :
     BaseViewModel() {
     val popularMovies: MutableLiveData<List<Movie>> = MutableLiveData()
     fun getPopularMovies() {
-        runOnBackgound {
+        runOnBackground {
             try {
                 val result = popularMoviesUC.run(GetPopularMoviesUC.Params(1, true))
                 result.either(::handleFailure, ::handleMovieList)
