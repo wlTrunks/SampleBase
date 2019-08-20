@@ -18,18 +18,18 @@ open class BaseViewModel(
 
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData()
     val messageData: MutableLiveData<String> = MutableLiveData()
+    val errorData: MutableLiveData<BaseError> = MutableLiveData()
     val dataLoadedState: MutableLiveData<DataLoadedState> = MutableLiveData()
 
-    private val job: Job = SupervisorJob()
+    private val _superJob: Job = SupervisorJob()
+
     override val coroutineContext: CoroutineContext
-        get() = dispatchersProvider.provideDefault() + job
+        get() = dispatchersProvider.provideDefault() + _superJob
 
     override fun onCleared() {
         super.onCleared()
-        coroutineContext.cancelChildren()
-        coroutineContext.cancel()
+        cancel()
     }
-
 
     protected fun handleFailure(error: BaseError) {
         "Error $error".toLogcat("handleFailure")
@@ -38,6 +38,7 @@ open class BaseViewModel(
             dataLoadedState.postValue(DataLoadedState.ERROR)
             if (error is BaseError.FeatureError) {
                 messageData.postValue(error.msg)
+                errorData.postValue(error)
             }
         }
     }
@@ -45,22 +46,24 @@ open class BaseViewModel(
     protected fun handleSuccess(msg: BaseSuccess) {
         "Success $msg".toLogcat("handleSuccess")
         runOnUI {
-            msg.message?.let {
+            if (!msg.message.isNullOrEmpty()) {
                 messageData.postValue(msg.message)
             }
             dataLoadedState.postValue(DataLoadedState.SUCCESS)
         }
     }
 
-    protected fun <T> runOnBackground(bg: suspend () -> T) {
+    protected fun runOnBackground(bg: suspend CoroutineScope.() -> Unit): Deferred<Unit> {
         loadingState.postValue(LoadingState.ON_START)
-        coroutineContext + GlobalScope.async(dispatchersProvider.provideDefault()) {
+        val job = this.async(dispatchersProvider.provideIO()) {
             bg()
         }
+        coroutineContext + job
+        return job
     }
 
-    protected fun runOnUI(front: () -> Unit) {
-        coroutineContext + GlobalScope.launch(dispatchersProvider.provideUI()) {
+    protected fun runOnUI(front: suspend CoroutineScope.() -> Unit) {
+        coroutineContext + this.launch(dispatchersProvider.provideUI()) {
             front()
             dataLoadedState.postValue(DataLoadedState.SUCCESS)
             loadingState.postValue(LoadingState.DONE)

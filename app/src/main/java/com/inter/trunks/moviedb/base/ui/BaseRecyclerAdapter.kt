@@ -7,16 +7,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 
+/**
+ * Базовый адаптер.
+ *
+ * @property createViewHolder - требуется определить.
+ */
 open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val listenersList = HashSet<ItemsClickEventsListener>()
-    open var itemsClickEventsObservable = ItemsClickEventsObservable()
-    protected open var createViewHolder: ((ViewGroup, Int) -> RecyclerView.ViewHolder)? = null
-    protected open var getItemViewType: ((Int, Any) -> Int)? = null
-    /**
-     * Данные, которые необходимо будет отобразить в списке
-     */
-    private val itemList: MutableList<Any> = mutableListOf()
 
+    val listenersList = HashSet<ItemsClickEventsListener>()
+
+    open var itemsClickEventsObservable = ItemsClickEventsObservable()
+
+    protected open var createViewHolder: ((ViewGroup, Int) -> RecyclerView.ViewHolder)? = null
+
+    protected open var getItemViewType: ((Int, Any) -> Int)? = null
+
+    var clearListonDetach = true
+
+    /** Данные, которые необходимо будет отобразить в списке. */
+    private val itemList: MutableList<Any> = mutableListOf()
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -51,27 +60,20 @@ open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     override fun getItemCount() = itemList.size
-    /**
-     * Регистрация слушателей
-     */
+
+    /** Регистрация слушателей. */
     protected open fun registerItemsEventsListener() {
         for (rvmItemsClickEventsListener in listenersList) {
             itemsClickEventsObservable.registerObserver(rvmItemsClickEventsListener)
         }
     }
 
-    protected open fun unRegisterAllObservers() {
-        itemsClickEventsObservable.unregisterAll()
-    }
+    protected open fun unRegisterAllObservers() = itemsClickEventsObservable.unregisterAll()
 
-    /**
-     * Возвращаем элемент из списка по его позиции.
-     */
+    /** Возвращаем элемент из списка по его позиции. */
     fun getItemAtPosition(position: Int): Any? = itemList.getOrNull(position)
 
-    /**
-     * Добавление данных в список.
-     */
+    /** Добавление данных в список. */
     open fun setData(items: List<Any>) {
         with(itemList) {
             clear()
@@ -80,13 +82,10 @@ open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         notifyDataSetChanged()
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return getItemViewType?.invoke(position, itemList[position]) ?: 0
-    }
+    override fun getItemViewType(position: Int): Int =
+        getItemViewType?.invoke(position, itemList[position]) ?: 0
 
-    /**
-     * Добавление и дополнение данных в текущий список.
-     */
+    /** Добавление и дополнение данных в текущий список. */
     open fun addData(items: List<Any>) {
         val positionStart = itemList.size + 1
         this.itemList.addAll(items)
@@ -141,9 +140,7 @@ open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         return isRemoved
     }
 
-    /**
-     * Удаление элемента по кастомному предикату.
-     */
+    /** Удаление элемента по кастомному предикату. */
     @Suppress("UNCHECKED_CAST")
     open fun <T> removeItemAtPredicate(predicate: (data: Any?) -> Boolean): T {
         var item: T? = null
@@ -163,24 +160,24 @@ open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
     fun resetData(notify: Boolean = false) {
         itemList.clear()
-        if (notify)
-            notifyDataSetChanged()
+        if (notify) notifyDataSetChanged()
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getList(): List<T> {
-        return itemList as List<T>
-    }
+    fun <T> getList(): List<T> = itemList as List<T>
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getItem(position: Int): T {
-        return itemList[position] as T
-    }
+    fun <T> getItem(position: Int): T = itemList[position] as T
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getItemPredicate(predicate: (data: Any?) -> Boolean): T? = itemList.find(predicate) as T
+
+    fun listContainItem(item: Any): Boolean = itemList.contains(item)
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         unRegisterAllObservers()
-        itemList.clear()
+        if (clearListonDetach) itemList.clear()
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -196,17 +193,16 @@ open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         )
     }
 
-
     interface ItemViewHolderBinder<T, VH : RecyclerView.ViewHolder> {
+
         fun onBindViewHolder(holder: VH, item: T)
+
         fun processOnClickListener(
             viewHolder: VH,
             itemsClickEventsObservable: ItemsClickEventsObservable
         ) {
-            viewHolder.itemView.setOnClickListener { v ->
-                itemsClickEventsObservable.notifyItemClick(
-                    viewHolder.adapterPosition
-                )
+            viewHolder.itemView.setOnClickListener {
+                itemsClickEventsObservable.notifyItemClick(viewHolder.adapterPosition)
             }
         }
 
@@ -214,10 +210,8 @@ open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
             viewHolder: VH,
             itemsClickEventsObservable: ItemsClickEventsObservable
         ) {
-            viewHolder.itemView.setOnLongClickListener { v ->
-                itemsClickEventsObservable.notifyItemLongClick(
-                    viewHolder.adapterPosition
-                )
+            viewHolder.itemView.setOnLongClickListener {
+                itemsClickEventsObservable.notifyItemLongClick(viewHolder.adapterPosition)
             }
         }
 
@@ -225,51 +219,37 @@ open class BaseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     open class ItemsClickEventsObservable : Observable<ItemsClickEventsListener>() {
-        fun notifyItemClick(position: Int) {
-            synchronized(mObservers) {
-                for (l in mObservers) {
-                    l.onItemClick(position)
-                }
-            }
+
+        fun notifyItemClick(position: Int) = synchronized(mObservers) {
+            for (l in mObservers) l.onItemClick(position)
         }
 
-        fun notifyItemLongClick(position: Int): Boolean {
-            synchronized(mObservers) {
-                var consumed = false
-                for (l in mObservers) {
-                    if (l.onItemLongClick(position)) {
-                        consumed = true
-                    }
-                }
-                return consumed
+        fun notifyItemLongClick(position: Int): Boolean = synchronized(mObservers) {
+            var consumed = false
+            for (l in mObservers) if (l.onItemLongClick(position)) {
+                consumed = true
             }
+            return consumed
         }
     }
 
-    /**
-     * Базовый VH с использование синтетики
-     */
+    /** Базовый VH с использованием синтетики. */
     abstract class BaseViewHolder<T, VH : RecyclerView.ViewHolder>(
         val layoutId: Int,
         val parent: ViewGroup
-    ) :
-        RecyclerView.ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                layoutId,
-                parent,
-                false
-            )
-        ), BaseRecyclerAdapter.ItemViewHolderBinder<T, VH>, LayoutContainer {
+    ) : RecyclerView.ViewHolder(
+        LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
+    ), ItemViewHolderBinder<T, VH>, LayoutContainer {
+
         override val containerView: View = itemView
     }
-
-
 }
 
 interface ItemsClickEventsListener {
+
     fun onItemClick(position: Int) {}
-    /**
-     * @return возращать true для получения
-     */
+
+    /** @return возращать true для получения. */
     fun onItemLongClick(position: Int): Boolean = false
 }
+

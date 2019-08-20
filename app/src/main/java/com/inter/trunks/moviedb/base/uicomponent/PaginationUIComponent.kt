@@ -13,9 +13,7 @@ import com.inter.trunks.presentation.base.component.UIComponent
 import org.jetbrains.anko.findOptional
 
 class PaginationUIComponent(
-
     private val paginationUIInterface: PaginationUIInterface = PaginationUIInterface.STUB
-
 ) : UIComponent(),
     Progressable {
 
@@ -38,7 +36,7 @@ class PaginationUIComponent(
                 if (((scrollY >= (nestedScrollView1
                         .getChildAt(nestedScrollView1.childCount - 1)
                         .measuredHeight - nestedScrollView1.measuredHeight)) &&
-                            scrollY > oldScrollY)
+                        scrollY > oldScrollY)
                 ) {
                     proceedPaging()
                 }
@@ -97,7 +95,6 @@ class PaginationUIComponent(
             }
     }
 
-
     @Retention(AnnotationRetention.SOURCE)
     @IntDef(View.FOCUS_DOWN, View.FOCUS_UP, FOCUS_NONE)
     annotation class NestedScrollFocusDirection
@@ -119,7 +116,6 @@ class PaginationUIComponent(
                 override fun onLoadingNextPage() {}
 
                 override fun checkPagingEnable(): Boolean = true
-
             }
         }
     }

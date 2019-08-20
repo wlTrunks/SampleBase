@@ -2,6 +2,7 @@ package com.inter.trunks.moviedb.base.uicomponent
 
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -102,9 +103,11 @@ class RecyclerUIComponent<Adapter : RecyclerView.Adapter<*>>(
     }
 
     fun setEmptyViewText(@StringRes stringId: Int) {
-        if (emptyView is TextView) {
-            (emptyView as TextView).text = context?.getString(stringId)
-        }
+        (emptyView as? TextView)?.text = context?.getString(stringId)
+    }
+
+    fun setEmptyViewIcon(@DrawableRes drawId: Int) {
+        (emptyView as? TextView)?.setCompoundDrawablesWithIntrinsicBounds(0, drawId, 0, 0)
     }
 
     fun scrollToPosition(position: Int) = recycler?.scrollToPosition(position)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -31,8 +32,8 @@ class PagerUIComponent(manager: FragmentManager) : UIComponent() {
 
     override fun onViewCreated(layout: View) {
         super.onViewCreated(layout)
-//        tabLayout = layout.findViewById(R.id.slidingTabs)
-//        pager = layout.findViewById(R.id.pager)
+        // tabLayout = layout.findViewById(R.id.slidingTabs)
+        // pager = layout.findViewById(R.id.pager)
         if (pager == null) throw RuntimeException("Setup ViewPager on layout")
         pager!!.adapter = adapter
         if (tabLayout != null) {
@@ -45,6 +46,16 @@ class PagerUIComponent(manager: FragmentManager) : UIComponent() {
         this.pageList = pageList
         adapter.setPages(pageList)
         setTabLayoutTitleIcon()
+    }
+
+    fun <T : Fragment> getPageFragment(frClass: Class<T>): T? {
+        var fr: T? = null
+        pageList?.forEach {
+            if (frClass.isInstance(it.fragment)) {
+                fr = it.fragment as T
+            }
+        }
+        return fr
     }
 
     private fun setTabLayoutTitleIcon() {

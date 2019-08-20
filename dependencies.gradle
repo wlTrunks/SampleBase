@@ -10,7 +10,7 @@ ext {
     moshiConverter = "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
     moshi = "com.squareup.moshi:moshi-kotlin:1.8.0"
 
-    def koinVersion = "2.0.0-GA6"
+    def koinVersion = "2.0.1"
     koinScope = "org.koin:koin-android-scope:$koinVersion"
     koinViewModel = "org.koin:koin-android-viewmodel:$koinVersion"
     koinExt = "org.koin:koin-android-ext:$koinVersion"

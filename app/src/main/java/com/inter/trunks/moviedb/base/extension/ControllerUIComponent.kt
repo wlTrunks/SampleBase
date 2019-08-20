@@ -1,9 +1,15 @@
 package com.inter.trunks.moviedb.base.extension
 
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import com.inter.trunks.moviedb.base.ui.PagerAdapter
+import com.inter.trunks.moviedb.base.uicomponent.PagerUIComponent
 import com.inter.trunks.moviedb.base.uicomponent.ProgressableUIComponent
 import com.inter.trunks.moviedb.base.uicomponent.RecyclerUIComponent
+import com.inter.trunks.moviedb.base.uicomponent.ToolbarUIComponent
 import com.inter.trunks.presentation.base.component.UIComponentHolder
 
 /**
@@ -19,8 +25,17 @@ fun UIComponentHolder.endProgress() = progressableComponent().forEach { it.end()
 
 fun UIComponentHolder.refreshUI() = getComponent(RecyclerUIComponent::class.java)?.refreshUI()
 
-//fun UIComponentHolder.setPagerList(list: List<PagerAdapter.Page>) =
-//    getComponent(PagerUIComponent::class.java)?.setPages(list)
+fun <T : Fragment> UIComponentHolder.getPagerFragmentByClass(frClass: Class<T>) =
+    getComponent(PagerUIComponent::class.java)?.getPageFragment(frClass)
+
+fun UIComponentHolder.setEnableMenuItem(menuId: Int, enable: Boolean) =
+    getComponent(ToolbarUIComponent::class.java)?.disableEnableMenuItem(menuId, enable)
+
+fun UIComponentHolder.setMenuItemVisible(menuId: Int, visible: Boolean) =
+    getComponent(ToolbarUIComponent::class.java)?.setMenuItemVisible(menuId, visible)
+
+fun UIComponentHolder.setPagerList(list: MutableList<PagerAdapter.Page>) =
+    getComponent(PagerUIComponent::class.java)?.setPages(list)
 //
 //fun UIComponentHolder.hidePaginationLoader() =
 //    getComponent(PaginationUIComponent::class.java)?.end()
@@ -33,6 +48,10 @@ fun UIComponentHolder.scrollToPosition(position: Int) =
 
 fun UIComponentHolder.setNeedHideRootView(needHideRootView: Boolean) =
     getComponent(ProgressableUIComponent::class.java)?.setNeedHideRootView(needHideRootView)
+
+fun UIComponentHolder.setEmptyViewText(@StringRes resId:Int) = getComponent(RecyclerUIComponent::class.java)?.setEmptyViewText(resId)
+
+fun UIComponentHolder.setEmptyViewIcon(@DrawableRes drawId: Int) = getComponent(RecyclerUIComponent::class.java)?.setEmptyViewIcon(drawId)
 
 /**
  * Меняет позицию ProgressBar вниз экрана
