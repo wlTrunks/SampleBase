@@ -19,7 +19,7 @@ ext {
     coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
-    def roomVersion = "2.1.0-rc01"
+    def roomVersion = "2.1.0"
     roomRuntime = "androidx.room:room-runtime:$roomVersion"
     roomCompiler = "androidx.room:room-compiler:$roomVersion"
     roomKtx = "androidx.room:room-ktx:$roomVersion"
@@ -54,7 +54,7 @@ ext {
     presentationDependencies = [
             kotlinJdk,
             'androidx.core:core-ktx:1.0.2',
-            'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0',
+            'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0',
             koinScope,
             koinExt,
             coroutinesCore,
@@ -111,19 +111,21 @@ ext {
     mockitoKotlinVersion = '2.1.0'
     archExtensionsVersion = '1.1.0'
 
-    testDependencies = [junit                 : "junit:junit:${jUnitVersion}",
-                        kotlinJUnit           : "org.jetbrains.kotlin:kotlin-test-junit:${rootProject.ext.kotlin_version}",
-                        mockito               : "org.mockito:mockito-core:${mockitoVersion}",
-                        mockitoKotlin         : "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}",
-                        archCoreTesting       : "android.arch.core:core-testing:${archExtensionsVersion}",
-                        espressoCore          : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
-                        espressoContrib       : "com.android.support.test.espresso:espresso-contrib:${espressoVersion}",
-                        espressoIdlingResource: "com.android.support.test.espresso:espresso-idling-resource:${espressoVersion}",
-                        robolectric           : "org.robolectric:robolectric:${robolectricVersion}",
-                        roomMigrations        : "android.arch.persistence.room:testing:${archExtensionsVersion}",
-                        mockitoAndroid        : "org.mockito:mockito-android:${mockitoVersion}",
-                        androidRunner         : "com.android.support.test:runner:${runnerVersion}",
-                        androidRules          : "com.android.support.test:rules:${runnerVersion}",
-                        hamcrest              : "org.hamcrest:hamcrest-all:${hamcrestVersion}"]
+    testDependencies = [
+            junit                 : "junit:junit:${jUnitVersion}",
+            kotlinJUnit           : "org.jetbrains.kotlin:kotlin-test-junit:${rootProject.ext.kotlin_version}",
+            mockito               : "org.mockito:mockito-core:${mockitoVersion}",
+            mockitoKotlin         : "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}",
+            archCoreTesting       : "android.arch.core:core-testing:${archExtensionsVersion}",
+            espressoCore          : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            espressoContrib       : "com.android.support.test.espresso:espresso-contrib:${espressoVersion}",
+            espressoIdlingResource: "com.android.support.test.espresso:espresso-idling-resource:${espressoVersion}",
+            robolectric           : "org.robolectric:robolectric:${robolectricVersion}",
+            roomMigrations        : "android.arch.persistence.room:testing:${archExtensionsVersion}",
+            mockitoAndroid        : "org.mockito:mockito-android:${mockitoVersion}",
+            androidRunner         : "com.android.support.test:runner:${runnerVersion}",
+            androidRules          : "com.android.support.test:rules:${runnerVersion}",
+            hamcrest              : "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+    ]
 
 }

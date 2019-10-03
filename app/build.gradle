@@ -35,4 +35,7 @@ dependencies {
     implementation project(':presentation')
     implementation appDependencies
     kapt appKaptDependencies
+
+    def testDependencies = rootProject.ext.testDependencies
+    testImplementation testDependencies.junit
 }

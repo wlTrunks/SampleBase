@@ -14,8 +14,12 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(MoviesModule,
-                MoviesDataModule)
+            modules(
+                listOf(
+                    MoviesModule,
+                    MoviesDataModule
+                )
+            )
         }
     }
 }
