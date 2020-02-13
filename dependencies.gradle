@@ -1,6 +1,6 @@
 ext {
 
-    compileSdkVersion = 28
+    compileSdkVersion = 29
     minSdkVersion = 21
 
     def retrofitVersion = "2.6.0-SNAPSHOT"
@@ -31,13 +31,18 @@ ext {
     archRuntime = "androidx.lifecycle:lifecycle-runtime:$archVersion"
     archExt = "androidx.lifecycle:lifecycle-extensions:$archVersion"
 
+    appCompat = "androidx.appcompat:appcompat:1.1.0"
+    activity = "androidx.activity:activity-ktx:1.1.0"
+    fragment = "androidx.fragment:fragment-ktx:1.2.1"
+    core = 'androidx.core:core-ktx:1.2.0'
+
     // App
     appDependencies = [
             kotlinJdk,
-            'androidx.constraintlayout:constraintlayout:2.0.0-beta1',
-            'androidx.appcompat:appcompat:1.0.2',
+            'androidx.constraintlayout:constraintlayout:2.0.0-beta4',
+            appCompat,
             "org.jetbrains.anko:anko-commons:0.10.4",
-            'com.google.android.material:material:1.1.0-alpha07',
+            'com.google.android.material:material:1.1.0',
             'com.github.bumptech.glide:glide:4.9.0',
             coroutinesAndroid,
             archExt,
@@ -53,8 +58,9 @@ ext {
     // Presentation
     presentationDependencies = [
             kotlinJdk,
-            'androidx.core:core-ktx:1.0.2',
+            core,
             'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0',
+            appCompat,
             koinScope,
             koinExt,
             coroutinesCore,

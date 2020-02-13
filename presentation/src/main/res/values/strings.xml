@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">presentation</string>
+    <string name="all_cancel">YES</string>
+    <string name="all_no">NO</string>
+    <string name="all_yes">YES</string>
+    <string name="all_ok">OK</string>
+    <string name="all_continue">Next</string>
 </resources>

@@ -12,8 +12,11 @@ import org.jetbrains.anko.toast
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MoviePopularFragment : BaseFragment() {
+
     private val vm: PopularMoviesVM by viewModel()
+
     override fun getLayoutId(): Int = R.layout.fragment_popular_movies
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vm.popularMovies.observe(this@MoviePopularFragment, Observer<List<Movie>> {
@@ -24,5 +27,6 @@ class MoviePopularFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button.setOnClickListener { vm.getPopularMovies() }
+        cancel.setOnClickListener { vm.cancelRequest() }
     }
 }

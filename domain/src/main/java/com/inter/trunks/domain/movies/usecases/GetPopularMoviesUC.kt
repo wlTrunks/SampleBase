@@ -12,8 +12,6 @@ class GetPopularMoviesUC(
 ) : UseCase<List<Movie>, GetPopularMoviesUC.Params>() {
 
     override suspend fun run(params: Params): Either<BaseError, List<Movie>> {
-        "run params ${params.remote}".toLogcat("GetPopularMoviesUC", true)
-        "I'm working in thread ${Thread.currentThread().name}".toLogcat("GetPopularMoviesUC",true)
         return if (params.remote) repositoryI.getRemotePopularMovies(params.page) else
             repositoryI.getLocalPopularMovies(params.page)
     }
