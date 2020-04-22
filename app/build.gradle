@@ -35,7 +35,7 @@ dependencies {
     implementation project(':presentation')
     implementation appDependencies
     kapt appKaptDependencies
-
+    implementation 'com.caverock:androidsvg-aar:1.4'
     def testDependencies = rootProject.ext.testDependencies
     testImplementation testDependencies.junit
 }
